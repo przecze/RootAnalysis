@@ -518,12 +518,10 @@ void HTTHistograms::finalizeHistograms(int nRuns, float weight){
   ///Control regions plots
   ttScale = 1.0;
 
-return;
-
   for(unsigned int iCategory = (int)HTTAnalyzer::jet0;
       iCategory<(int)HTTAnalyzer::boosted;++iCategory){
 
-    plotCPhistograms(iCategory);
+    //plotCPhistograms(iCategory);
 
     wselOSCorrection =  std::pair<float,float>(1.0,0);
     wselSSCorrection =  std::pair<float,float>(1.0,0);
@@ -531,8 +529,8 @@ return;
     wselOSCorrection = getWNormalisation(iCategory, "OS");
     wselSSCorrection = getWNormalisation(iCategory, "SS");
 
-    //plotStack(iCategory, "MassVis");
-    plotStack(iCategory, "UnRollTauPtMassVis");
+    plotStack(iCategory, "MassSV");
+    //plotStack(iCategory, "UnRollTauPtMassVis");
     //plotStack(iCategory, "UnRollHiggsPtMassSV");
     //plotStack(iCategory, "UnRollMjjMassSV");
     //plotStack(iCategory, "UnRollMassSVPhiCP");
@@ -570,29 +568,6 @@ return;
     plotStack(iCategory, "Phi-nVectors");
     plotStack(iCategory, "Phi-nVecIP");
     plotStack(iCategory, "NPV");
-    }
-
-    ///Make the ststematic effect histos.
-
-    for(unsigned int iSystEffect = (unsigned int)sysEffects::NOMINAL_SVFIT;
-	iSystEffect<(unsigned int)sysEffects::DUMMY;++iSystEffect){
-
-      for(unsigned int iCategory = (int)HTTAnalyzer::jet0;
-	  iCategory<(int)HTTAnalyzer::boosted;++iCategory){
-
-	wselOSCorrection =  std::pair<float,float>(1.0,0);
-	wselSSCorrection =  std::pair<float,float>(1.0,0);
-
-	wselOSCorrection = getWNormalisation(iCategory, "OS", iSystEffect);
-	wselSSCorrection = getWNormalisation(iCategory, "SS", iSystEffect);
-
-	plotStack(iCategory, "MassSV", "OS", iSystEffect);
-	plotStack(iCategory, "UnRollTauPtMassVis", "OS", iSystEffect);
-	plotStack(iCategory, "UnRollHiggsPtMassSV", "OS", iSystEffect);
-	plotStack(iCategory, "UnRollMjjMassSV", "OS", iSystEffect);
-	plotStack(iCategory, "UnRollMassSVPhiCP", "OS", iSystEffect);
-	plotStack(iCategory, "UnRollMassSVYCP", "OS", iSystEffect);
-      }
     }
 }
 /////////////////////////////////////////////////////////
