@@ -41,17 +41,16 @@ void TestAnalyzer::finalize(){
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 bool TestAnalyzer::analyze(const EventProxyBase& iEvent){
-
-  const EventProxyTest & myEventProxy = static_cast<const EventProxyTest&>(iEvent);
-
-  std::string sampleName = "Signal";
   
-  tmpName = "h1DX"+sampleName;
-  myHistos_->fill1DHistogram(tmpName,myEventProxy.x);
-
-  tmpName = "h1DY"+sampleName;
-  myHistos_->fill1DHistogram(tmpName,myEventProxy.y);
-
+  const EventProxyTest & myEventProxy = static_cast<const EventProxyTest&>(iEvent);
+  
+  unsigned int nJets = myEventProxy.getNumberOfJets();
+  std::cout<<"Number of jets: "<<nJets<<std::endl;
+    
+  for(unsigned int iJet=0;iJet<nJets;++iJet){
+    std::cout<<iJet<<" jet pt: "<<myEventProxy.getJetP4(iJet).Perp()<<std::endl;
+  }
+  
   return true;
 }
 //////////////////////////////////////////////////////////////////////////////
