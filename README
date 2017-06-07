@@ -1,6 +1,6 @@
 git clone https://github.com/akalinow/RootAnalysis
 cd RootAnalysis
-git checkout relevant_tag
+git checkout 4Mu_exercise
 libtoolize
 aclocal
 automake --add-missing
