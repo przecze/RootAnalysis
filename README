@@ -7,11 +7,11 @@ automake --add-missing
 autoreconf
 ./configure 
 make
-cd OTFAnalysis
-./test otf.ini
+cd HZZAnalysis
+./hzzAnalysis hZZ_4Mu.ini
 
 
-NOTE: File otf.ini contains a path to the data file. Please update it before running the code.
+NOTE: File  hZZ_4Mu.ini contains a path to the data file. Please update it before running the code.
 NOTE: for non standard location of ROOT or BOOST see ./configure --help
 
 
