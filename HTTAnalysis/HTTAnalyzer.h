@@ -27,6 +27,18 @@ class TH2F;
 class TH3F;
 class TLorentzVector;
 
+typedef struct {                                                                                                                                                                                   
+      
+  ///Variables saved into a TTree                                                                                                                                                      
+  float nMuons, mass2Mu;                                                                                                                                                                           
+       
+  float MET, mT;                                                                                                                                                                                  
+  float muonPt, muonEta, muonPhi;
+  float muonSIP, muonDxy, muonDz, muonIsol, muonID;
+  float nBJets30, nLightJets30;
+  float mass2Jets,  mass3Jets;
+} ENTRY;
+
 class HTTAnalyzer: public Analyzer{
 
   friend class ChannelSpecifics;
@@ -176,6 +188,8 @@ class HTTAnalyzer: public Analyzer{
 
   //cut on nPCA
   float nPCAMin_;
+
+  ENTRY aEntry;
 
 };
 

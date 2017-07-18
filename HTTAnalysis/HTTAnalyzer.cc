@@ -84,6 +84,7 @@ std::vector<HTTParticle> HTTAnalyzer::getSeparatedJets(const EventProxyHTT & myE
         for(auto aJet : *myEventProxy.jets) {
                 float dRLeg2 = aJet.getP4().DeltaR(aLeg2.getP4());
                 float dRLeg1 = aJet.getP4().DeltaR(aLeg1.getP4());
+                dRLeg2 = 999.0; //TEST
                 bool loosePFJetID = aJet.getProperty(PropertyEnum::PFjetID)>=1;
                 if(dRLeg1>deltaR && dRLeg2>deltaR && loosePFJetID) separatedJets.push_back(aJet);
         }
@@ -123,7 +124,19 @@ void HTTAnalyzer::setAnalysisObjects(const EventProxyHTT & myEventProxy){
 }
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-void HTTAnalyzer::addBranch(TTree *tree){ /*tree->Branch("muonPt",&muonPt);*/}
+void HTTAnalyzer::addBranch(TTree *tree){
+
+  std::string leafList = "nMuons/f";
+  leafList+=":mass2Mu/f";
+  leafList+=":MET/f:mT/f";
+  leafList+=":muonPt/f:muonEta/f:muonPhi/f";
+  leafList+=":muonSIP/f:muonDxy/f:muonDz/f";
+  leafList+=":muonIsol/f:muonID/f";
+  leafList+=":nBJets30/f:nLightJets30/f";
+  leafList+=":mass2Jets/f:mass3Jets/f";
+
+  tree->Branch("entry",&aEntry,leafList.c_str());
+}
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 void HTTAnalyzer::fillControlHistos(const std::string & hNameSuffix, float eventWeight,
@@ -276,6 +289,58 @@ bool HTTAnalyzer::analyze(const EventProxyBase& iEvent){
 
         if(!myEventProxy.pairs->size()) return true;
         setAnalysisObjects(myEventProxy);
+
+        ////TEST
+        unsigned int muonIDmask = (1<<6);
+        const TLorentzVector & aVisSum = aLeg1.getP4() + aLeg2.getP4();
+        float visMass = aVisSum.M();
+
+        int nBJets = 0;
+        TLorentzVector bJet1, bJet2;
+        for(auto itJet: aSeparatedJets) {
+          if(std::abs(itJet.getP4().Eta())<2.4 &&
+             itJet.getP4().Pt()>30 && 
+             itJet.getProperty(PropertyEnum::bCSVscore)>0.8484){
+            ++nBJets;
+            if(bJet1.E()<1) bJet1 = itJet.getP4();
+            else if(bJet2.E()<1) bJet2 = itJet.getP4();
+          }
+        }
+        int nLightJets = 0;
+        TLorentzVector lightJet1, lightJet2;
+        for(auto itJet: aSeparatedJets) {
+          if(itJet.getP4().Pt()>30 && 
+             (bJet1.E()<1 || itJet.getP4().DeltaR(bJet1)>0.5) && 
+             (bJet2.E()<1 || itJet.getP4().DeltaR(bJet2)>0.5)){
+            ++nLightJets;
+            if(lightJet1.E()<1) lightJet1 = itJet.getP4();
+            else if(lightJet2.E()<1) lightJet2 = itJet.getP4();
+          }
+        }
+        float mass2Jets = (lightJet1 + lightJet2).M();
+        float mass3Jets = (bJet1 + lightJet1 + lightJet2).M();
+
+        aEntry.nMuons = (aLeg1.getP4().Pt()>5) + (aLeg2.getP4().Pt()>5);
+        aEntry.mass2Mu = visMass;
+        aEntry.muonPt = aLeg1.getP4().Pt();
+        aEntry.muonEta = aLeg1.getP4().Eta();
+        aEntry.muonPhi = aLeg1.getP4().Phi();
+        aEntry.muonIsol = aLeg1.getProperty(PropertyEnum::combreliso);
+        aEntry.muonID = ((int)aLeg1.getProperty(PropertyEnum::muonID) & muonIDmask)>0;
+        aEntry.muonSIP = aLeg1.getProperty(PropertyEnum::SIP);
+	aEntry.muonDxy = aLeg1.getProperty(PropertyEnum::dxy);
+	aEntry.muonDz = aLeg1.getProperty(PropertyEnum::dz);
+
+        aEntry.MET = aMET.getP4().Pt();
+        aEntry.mT = aPair.getMTMuon();
+        aEntry.nBJets30 = nBJets;
+        aEntry.nLightJets30 = nLightJets;
+        aEntry.mass2Jets = mass2Jets;
+        aEntry.mass3Jets = mass3Jets;
+
+        return true;
+        //////////////////
+
 
         std::pair<bool, bool> goodDecayModes = myChannelSpecifics->checkTauDecayMode(myEventProxy);
         bool goodGenDecayMode = goodDecayModes.first;
