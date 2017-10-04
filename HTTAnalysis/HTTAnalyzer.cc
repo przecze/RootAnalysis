@@ -70,7 +70,7 @@ void HTTAnalyzer::initialize(TDirectory* aDir,
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 void HTTAnalyzer::finalize(){
-       
+
         myHistos_->finalizeHistograms(myChannelSpecifics->getCategoryRejester());
 }
 //////////////////////////////////////////////////////////////////////////////
@@ -109,21 +109,33 @@ void HTTAnalyzer::setAnalysisObjects(const EventProxyHTT & myEventProxy){
         aSeparatedJets = getSeparatedJets(myEventProxy, 0.5);
         aJet1 = aSeparatedJets.size() ? aSeparatedJets[0] : HTTParticle();
         aJet2 = aSeparatedJets.size()>1 ? aSeparatedJets[1] : HTTParticle();
-	aBJet1 = HTTParticle();
-	for(auto itJet: aSeparatedJets) {
-          if(std::abs(itJet.getP4().Eta())<2.4 &&
-             itJet.getProperty(PropertyEnum::bCSVscore)>0.8484 && //Medium WP
-	     myChannelSpecifics->promoteBJet(itJet)
-	     ){
-	    aBJet1 = itJet;
-	    break;
-	  }
-	}
+        aBJet1 = HTTParticle();
+        for(auto itJet: aSeparatedJets) {
+                if(std::abs(itJet.getP4().Eta())<2.4 &&
+                   itJet.getProperty(PropertyEnum::bCSVscore)>0.8484 && //Medium WP
+                   myChannelSpecifics->promoteBJet(itJet)
+                   ) {
+                        aBJet1 = itJet;
+                        break;
+                }
+        }
 
 }
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-void HTTAnalyzer::addBranch(TTree *tree){ /*tree->Branch("muonPt",&muonPt);*/}
+void HTTAnalyzer::addBranch(TTree *tree){
+
+        tree->Branch("genDiTauMass",&genDiTauMass);
+
+        tree->Branch("diTauMassNominal",&diTauMassNominal);
+        tree->Branch("diTauMassTESUp",&diTauMassTESUp);
+        tree->Branch("diTauMassTESDown",&diTauMassTESDown);
+
+        tree->Branch("diTauMassCubaNominal",&diTauMassCubaNominal);
+        tree->Branch("diTauMassCubaTESUp",&diTauMassCubaTESUp);
+        tree->Branch("diTauMassCubaTESDown",&diTauMassCubaTESDown);
+
+}
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 void HTTAnalyzer::fillControlHistos(const std::string & hNameSuffix, float eventWeight,
@@ -203,10 +215,10 @@ void HTTAnalyzer::fillControlHistos(const std::string & hNameSuffix, float event
 
         ///Fill b-jets info
         myHistos_->fill1DHistogram("h1DStatsNBTag"+hNameSuffix,nBJets,eventWeight);
-	if(nBJets>0){
-	  myHistos_->fill1DHistogram("h1DPtLeadingBJet"+hNameSuffix,aBJet1.getP4(aSystEffect).Pt(),eventWeight);
-	  myHistos_->fill1DHistogram("h1DEtaLeadingBJet"+hNameSuffix,aBJet1.getP4(aSystEffect).Eta(),eventWeight);
-	}
+        if(nBJets>0) {
+                myHistos_->fill1DHistogram("h1DPtLeadingBJet"+hNameSuffix,aBJet1.getP4(aSystEffect).Pt(),eventWeight);
+                myHistos_->fill1DHistogram("h1DEtaLeadingBJet"+hNameSuffix,aBJet1.getP4(aSystEffect).Eta(),eventWeight);
+        }
 
 }
 //////////////////////////////////////////////////////////////////////////////
@@ -241,7 +253,7 @@ bool HTTAnalyzer::passCategory(unsigned int iCategory){
 //////////////////////////////////////////////////////////////////////////////
 bool HTTAnalyzer::analyze(const EventProxyBase& iEvent){
 
-        bool runSystematics = false;
+        bool runSystematics = true;
 
         const EventProxyHTT & myEventProxy = static_cast<const EventProxyHTT&>(iEvent);
         sampleName = getSampleName(myEventProxy);
@@ -263,6 +275,8 @@ bool HTTAnalyzer::analyze(const EventProxyBase& iEvent){
         if(!myEventProxy.pairs->size()) return true;
         setAnalysisObjects(myEventProxy);
 
+        genDiTauMass = (aGenLeg1.getP4()+aGenLeg2.getP4()).M();
+
         std::pair<bool, bool> goodDecayModes = myChannelSpecifics->checkTauDecayMode(myEventProxy);
         bool goodGenDecayMode = goodDecayModes.first;
         bool goodRecoDecayMode = goodDecayModes.second;
@@ -275,10 +289,29 @@ bool HTTAnalyzer::analyze(const EventProxyBase& iEvent){
         for(unsigned int iSystEffect = (unsigned int)HTTAnalysis::NOMINAL;
             iSystEffect<=(unsigned int)HTTAnalysis::ZmumuDown; ++iSystEffect) {
 
-              if(!runSystematics && iSystEffect!=(unsigned int)HTTAnalysis::NOMINAL) continue;
-              if(iSystEffect==(unsigned int)HTTAnalysis::DUMMY_SYS) continue;
+                if(!runSystematics && iSystEffect!=(unsigned int)HTTAnalysis::NOMINAL) continue;
+                if(iSystEffect==(unsigned int)HTTAnalysis::DUMMY_SYS) continue;
 
                 HTTAnalysis::sysEffects aSystEffect = static_cast<HTTAnalysis::sysEffects>(iSystEffect);
+
+                /////////////TEST
+                if(iSystEffect==(unsigned int)HTTAnalysis::NOMINAL){
+                  diTauMassNominal = aPair.getP4(aSystEffect).M();
+                  diTauMassCubaNominal = aPair.getLeg1P4(aSystEffect).M();
+                  std::cout<<"diTauMassNominal = "<<diTauMassNominal
+                           <<" diTauMassCubaNominal = "<<diTauMassCubaNominal
+                           <<std::endl;
+                }
+                if(iSystEffect==(unsigned int)HTTAnalysis::TESUp){
+                  diTauMassTESUp = aPair.getP4(aSystEffect).M();
+                  diTauMassCubaTESUp = aPair.getLeg1P4(aSystEffect).M();
+                }
+                if(iSystEffect==(unsigned int)HTTAnalysis::TESDown){
+                  diTauMassTESDown = aPair.getP4(aSystEffect).M();
+                  diTauMassCubaTESDown = aPair.getLeg1P4(aSystEffect).M();
+                }
+                continue;
+                //////////////////////////
 
                 float leg1ScaleFactor = myChannelSpecifics->getLeg1Correction(aSystEffect);
                 float leg2ScaleFactor = myChannelSpecifics->getLeg2Correction(aSystEffect);

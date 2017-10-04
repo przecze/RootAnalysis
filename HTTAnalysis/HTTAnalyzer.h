@@ -177,6 +177,9 @@ class HTTAnalyzer: public Analyzer{
   //cut on nPCA
   float nPCAMin_;
 
+  double genDiTauMass, diTauMassNominal, diTauMassTESUp, diTauMassTESDown;
+  double diTauMassCubaNominal, diTauMassCubaTESUp, diTauMassCubaTESDown;
+
 };
 
 #endif
