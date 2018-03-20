@@ -11,7 +11,8 @@ MuTauSpecifics::MuTauSpecifics(HTTAnalyzer * aAnalyzer) : ChannelSpecifics(aAnal
 
         decayModeName = "MuTau";
         tauID_FRSF_mu = new TH1F("tauID_FRSF_mu", "", 5, bins_mu_);
-        Float_t binContents_mu[5] = {1.263, 1.364, 0.854, 1.712, 2.324};
+        //Float_t binContents_mu[5] = {1.263, 1.364, 0.854, 1.712, 2.324};
+	Float_t binContents_mu[5] = {1, 1, 1, 1, 1};
         for(int i=0; i<tauID_FRSF_mu->GetNbinsX(); i++){
           tauID_FRSF_mu->SetBinContent(i+1, binContents_mu[i]);
           }
@@ -132,24 +133,6 @@ void MuTauSpecifics::testAllCategories(const HTTAnalysis::sysEffects & aSystEffe
         float jetsMass = (myAnalyzer->aJet1.getP4(aSystEffect)+myAnalyzer->aJet2.getP4(aSystEffect)).M();
         float higgsPt =  (myAnalyzer->aLeg1.getP4(aSystEffect) + myAnalyzer->aLeg2.getP4(aSystEffect) + myAnalyzer->aMET.getP4(aSystEffect)).Pt();
         bool mtSelection = myAnalyzer->aPair.getMTMuon(aSystEffect)<50;
-
-        bool jet0_low =  myAnalyzer->aLeg2.getP4(aSystEffect).Pt()>20 && myAnalyzer->aLeg2.getP4(aSystEffect).Pt()<50 && myAnalyzer->nJets30==0;
-        bool jet0_high = myAnalyzer->aLeg2.getP4(aSystEffect).Pt()>50 && myAnalyzer->nJets30==0;
-
-        bool jet1_low = (myAnalyzer->nJets30==1 || (myAnalyzer->nJets30==2 && jetsMass<500)) &&
-                        (myAnalyzer->aLeg2.getP4(aSystEffect).Pt()>30 && myAnalyzer->aLeg2.getP4(aSystEffect).Pt()<40 ||
-                         myAnalyzer->aLeg2.getP4(aSystEffect).Pt()>40 && higgsPt<140);
-
-        bool jet1_high = (myAnalyzer->nJets30==1 || (myAnalyzer->nJets30==2 && jetsMass<500)) &&
-                         (myAnalyzer->aLeg2.getP4(aSystEffect).Pt()>40 && higgsPt>140);
-
-        bool vbf_low = myAnalyzer->aLeg2.getP4(aSystEffect).Pt()>20 &&
-                       myAnalyzer->nJets30==2 && jetsMass>500 &&
-                       (jetsMass<800 || higgsPt<100);
-
-        bool vbf_high = myAnalyzer->aLeg2.getP4(aSystEffect).Pt()>20 &&
-                        myAnalyzer->nJets30==2 && jetsMass>800 && higgsPt>100;
-
         bool cpMuonSelection = myAnalyzer->aLeg1.getPCARefitPV().Mag()>myAnalyzer->nPCAMin_;
         bool cpTauSelection =  myAnalyzer->aLeg2.getPCARefitPV().Mag()>myAnalyzer->nPCAMin_;
         bool cpPi = cpMuonSelection && cpTauSelection && myAnalyzer->aLeg2.getProperty(PropertyEnum::decayMode)==HTTAnalysis::tauDecay1ChargedPion0PiZero;
@@ -244,7 +227,7 @@ void MuTauSpecifics::testAllCategories(const HTTAnalysis::sysEffects & aSystEffe
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 float MuTauSpecifics::getLeg1Correction(const HTTAnalysis::sysEffects & aSystEffect){
-
+ 
         return getLeptonCorrection(myAnalyzer->aLeg1.getP4(aSystEffect).Eta(),
                                    myAnalyzer->aLeg1.getP4(aSystEffect).Pt(),
                                    myAnalyzer->aLeg1.getProperty(PropertyEnum::combreliso),

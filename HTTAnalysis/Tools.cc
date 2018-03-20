@@ -6,7 +6,7 @@
 namespace HTTAnalysis {
 
 float getLumi(){
-
+  /*
         //./.local/bin/brilcalc lumi --normtag ~lumipro/public/normtag_file/OfflineNormtagV2.json -i lumiSummary_Run2015C_16Dec2015_v1.json
         float run2015C = 17225935.728*1E-6;
         float run2015D = 2114239169.533*1E-6;
@@ -28,13 +28,13 @@ float getLumi(){
 
         float run2016HPromptReco_v2 = 8545039541.475;
         float run2016HPromptReco_v3 = 216782873.203;
-
+  
         float run2016 = run2016BReReco + run2016CReReco +
                         run2016DReReco + run2016EReReco +
                         run2016FReReco + run2016GReReco +
                         run2016HPromptReco_v2 + run2016HPromptReco_v3;
-
-        run2016 = 35.87*1E3*1E6; //Updated Run2016 luminosity
+  */
+        float run2016 = 35.87*1E3*1E6; //Updated Run2016 luminosity
         return run2016*1E-6; //pb-1 data for NTUPLES_05_12_2016
 }
 //////////////////////////////////////////////////////////////////////////////
@@ -51,12 +51,14 @@ float getCrossSection(const std::string & sampleName){
         //https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns#DY_Z
         if(sampleName.find("DYJetsMatch")!=std::string::npos || sampleName=="DYJets") {
                 //xsection for 3xZ->mu mu M50 in [pb]
-                crossSection = 3*1921.8;
+                //crossSection = 3*1921.8;
+	        crossSection = 1.16*4954.0;//CMS-AN-16-355
         }
         if(sampleName.find("WJets")!=std::string::npos) {
                 //xsection for 3xW->mu nu in [pb]
                 //https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat13TeVInclusive
-                crossSection = 3*20508.9;
+                //crossSection = 3*20508.9;
+         	  crossSection = 1.21*50380;//CMS-AN-16-355
         }
         if(sampleName.find("TTbar")!=std::string::npos) {
                 //https://twiki.cern.ch/twiki/bin/viewauth/CMS/KlubTwikiRun2
@@ -68,14 +70,13 @@ float getCrossSection(const std::string & sampleName){
         //https://twiki.cern.ch/twiki/bin/view/LHCPhysics/CERNYellowReportPageBR2014#Higgs_2_fermions
         //https://twiki.cern.ch/twiki/bin/view/LHCPhysics/CERNYellowReportPageAt1314TeV2014
         //Xsection for mass!=125 are calculated using luminosity ratio, and cross section for 8 TeV
-
         if(sampleName=="ggHTT110") crossSection = 5.790E+01*7.91E-02; //Analysis Note
         if(sampleName=="ggHTT120") crossSection = 5.222E+01*6.98E-02; //CERNYellowReportPageAt13TeV*CERNYellowReportPageBR
         if(sampleName=="ggHTT125") crossSection = 4.858E+01*6.27E-02; //CERNYellowReportPageAt13TeV*CERNYellowReportPageBR
         if(sampleName=="ggHTT130") crossSection = 4.531E+01*5.41E-02; //CERNYellowReportPageAt13TeV*CERNYellowReportPageBR
         if(sampleName=="ggHTT140") crossSection = 3.600E+01*3.60E-02; //Analysis Note
 
-        if(sampleName=="qqHTT110") crossSection = 4.434E+00*7.95E-02; //Analysis Note
+        if(sampleName=="qqHTT110") crossSection = 4.434E+00*7.91E-02; //Analysis Note
         if(sampleName=="qqHTT120") crossSection = 3.935E+00*6.98E-02; //CERNYellowReportPageAt13TeV*CERNYellowReportPageBR
         if(sampleName=="qqHTT125") crossSection = 3.782E+00*6.27E-02; //CERNYellowReportPageAt13TeV*CERNYellowReportPageBR
         if(sampleName=="qqHTT130") crossSection = 3.637E+00*5.41E-02; //CERNYellowReportPageAt13TeV*CERNYellowReportPageBR
@@ -94,7 +95,7 @@ float getCrossSection(const std::string & sampleName){
         if(sampleName=="WminusHTT130") crossSection = 0.4676*0.0541;
         if(sampleName=="WminusHTT140") crossSection = 0.3940*3.60E-02; //Analysis Note
 
-        if(sampleName=="ZHTT110") crossSection = 1.309*7.15E-02; //Analysis Note
+        if(sampleName=="ZHTT110") crossSection = 1.309*7.91E-02; //Analysis Note
         if(sampleName=="ZHTT120") crossSection = 0.994*0.0698;
         if(sampleName=="ZHTT125") crossSection = 0.884*0.0627;
         if(sampleName=="ZHTT130") crossSection = 0.790*0.0541;
@@ -119,7 +120,6 @@ float getCrossSection(const std::string & sampleName){
         if(sampleName=="EWKWPlus") crossSection = 25.62;
         if(sampleName=="EWKZ2JetsZToLL") crossSection = 3.987;
         if(sampleName=="EWKZ2JetsZToNuNu") crossSection = 10.01;
-
 
         ///https://twiki.cern.ch/twiki/bin/view/CMS/HiggsToTauTauWorking2016#MC_and_data_samples
         ///matching eff. = 0.00042

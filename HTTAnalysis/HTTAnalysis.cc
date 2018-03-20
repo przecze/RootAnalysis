@@ -45,7 +45,7 @@ int main(int argc, char ** argv) {
 	boost::property_tree::ptree pt;
 	boost::property_tree::ini_parser::read_ini(cfgFileName, pt);
 
-	typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
+	//typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
 	std::string processName = pt.get<std::string>("TreeAnalyzer.processName","Test");
 
 	//Tell Root we want to be multi-threaded

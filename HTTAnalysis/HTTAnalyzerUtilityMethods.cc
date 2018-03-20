@@ -150,7 +150,6 @@ std::string HTTAnalyzer::getDYSampleName(const EventProxyHTT & myEventProxy){
         else if(fileName.find("DYJetsToLLM50")!=std::string::npos && myEventProxy.event->getLHEnOutPartons()==4) jetsName =  "4JetsIncl";
         //else if(fileName.find("DYJetsToLLM50")!=std::string::npos && myEventProxy.event->getLHEnOutPartons()>0) jetsName =  "AllJets";
 
-        int decayModeBoson = myEventProxy.event->getDecayModeBoson();
         int leg1MCMatch = 6, leg2MCMatch = 6;
         if(myEventProxy.pairs->size()) {
                 HTTPair aPair = (*myEventProxy.pairs)[0];
@@ -167,7 +166,7 @@ std::string HTTAnalyzer::getDYSampleName(const EventProxyHTT & myEventProxy){
         }
         if(fileName.find("TT_")!=std::string::npos) {
                 if(leg1MCMatch==5 && leg2MCMatch==5) decayName = "T";
-                else if(leg1MCMatch<6 && leg2MCMatch<6) decayName = "L";
+                else if(leg1MCMatch<5 && leg2MCMatch<5) decayName = "L";
                 else decayName = "J";
         }
         return "DY"+jetsName+"Match"+decayName;

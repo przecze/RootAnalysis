@@ -23,7 +23,7 @@ public:
 
 ChannelSpecifics(HTTAnalyzer *aAnalyzer);
 
-~ChannelSpecifics();
+virtual ~ChannelSpecifics();
 
 virtual void setAnalysisObjects(const EventProxyHTT & myEventProxy) = 0;
 
@@ -69,8 +69,8 @@ void initializeBTagCorrections();
 HTTAnalyzer *myAnalyzer;
 
 ///Histograms with lepton corrections
-TH2F *h2DMuonIdCorrections;
-TH3F *h3DMuonIsoCorrections, *h3DMuonTrgCorrections, *h3DMuonXTrgCorrections;
+TH2F *h2DMuonIdIsoCorrections;
+TH3F *h3DMuonTrgCorrections, *h3DMuonXTrgCorrections;
 TH1F *h1DMuonTrkCorrections;
 TH3F *h3DTauCorrections;
 TH2F *h2DTauTrgGenuineCorrections, *h2DTauTrgFakeCorrections;

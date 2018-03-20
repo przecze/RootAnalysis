@@ -265,7 +265,7 @@ bool HTTAnalyzer::analyze(const EventProxyBase& iEvent){
 
         std::pair<bool, bool> goodDecayModes = myChannelSpecifics->checkTauDecayMode(myEventProxy);
         bool goodGenDecayMode = goodDecayModes.first;
-        bool goodRecoDecayMode = goodDecayModes.second;
+        //bool goodRecoDecayMode = goodDecayModes.second;
 
         if(goodGenDecayMode) fillGenDecayPlaneAngle(sampleName+"_GenNoOfflineSel", eventWeight);
 

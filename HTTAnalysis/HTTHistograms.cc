@@ -87,7 +87,8 @@ HTTHistograms::~HTTHistograms(){
 /////////////////////////////////////////////////////////
 TH1F *HTTHistograms::get1D_EWK2JetsSum(const std::string& name){
 
-        std::vector<std::string> ewkSamples = {"EWKWMinus", "EWKWPlus", "EWKZ2JetsZToLL", "EWKZ2JetsZToNuNu"};
+        //std::vector<std::string> ewkSamples = {"EWKWMinus", "EWKWPlus", "EWKZ2JetsZToLL", "EWKZ2JetsZToNuNu"};
+        std::vector<std::string> ewkSamples = {"EWKZ2JetsZToLL", "EWKZ2JetsZToNuNu"};
         return get1D_SumPattern_Histogram(name, "EWK2Jets", ewkSamples);
 
 }
@@ -406,7 +407,6 @@ void HTTHistograms::finalizeHistograms(const std::vector<const HTTAnalysis::even
         AnalysisHistograms::finalizeHistograms();
 
         myCategoryRejester  = aCategoryRejester;
-        unsigned int myNumberOfCategories = myCategoryRejester.size();
 
         std::vector<std::string> mainCategoryNames = {"0jet","boosted", "vbf",
                                                       //"inclusive","btag","nobtag"
@@ -1492,12 +1492,6 @@ THStack*  HTTHistograms::plotStack(unsigned int iCategory,
         leg->AddEntry(hHiggs,"H(125)#rightarrow#tau#tau","f");
         leg->SetHeader(Form("#int L = %.2f fb^{-1}",lumi/1000));
         leg->Draw();
-
-        float x = 0.6*(hs->GetXaxis()->GetXmax() -
-                       hs->GetXaxis()->GetXmin()) +
-                  hs->GetXaxis()->GetXmin();
-
-        float y = 0.8*(max - hs->GetMinimum()) + hs->GetMinimum();
         c1->cd();
         pad2->Draw();
         pad2->cd();
@@ -1606,15 +1600,16 @@ std::pair<float,float> HTTHistograms::getQCDControlToSignal(unsigned int iCatego
         c->Print(TString::Format("fig_png/%s.png",plotName.c_str()).Data());
         c->Print(TString::Format("fig_C/%s.C",plotName.c_str()).Data());
 
+	/*
         float param, dparam;
         param=line->GetParameter(0);
         dparam=line->GetParError(0);
-/*
+
         std::cout<<"Category: "<<categoryName<<std::endl
                  <<"\tQCD Tight/Loose` ratio: "<<std::endl
                  <<"\tRatio: "<<sumTight/sumLoose<<" +- "<<ratioErr<<std::endl
                  <<"\tFit: "<<param<<" +- "<<dparam<<std::endl;
- */
+	*/
         result = std::make_pair(sumTight/sumLoose,ratioErr);
         return result;
 }
