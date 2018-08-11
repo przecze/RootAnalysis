@@ -13,8 +13,7 @@ ROOT_GENERATE_DICTIONARY(G1__HTTEvent HTTEvent.h LINKDEF LinkDef.h)
 add_library(SVFitAnalysis SHARED ChannelSpecifics.cc  EventProxyHTT.cc svfitAnalyzer.cc
   svfitAnalyzerUtilityMethods.cc svfitHistograms.cc
   MuTauSpecifics.cc TauTauSpecifics.cc  MuMuSpecifics.cc
-  Tools.cc  HTTEvent.cxx  
-  G1__HTTEvent.cxx)
+  Tools.cc)
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build

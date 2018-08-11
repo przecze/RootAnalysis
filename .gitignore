@@ -25,3 +25,7 @@
 */.deps/*
 */.libs/*
 m4/*
+
+# VS Code files
+##################
+.vscode

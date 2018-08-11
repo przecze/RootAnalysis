@@ -1,12 +1,12 @@
 project(Pythia8Interface LANGUAGES CXX)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-ROOT_GENERATE_DICTIONARY(G__HTTEvent HTTEvent.h LINKDEF LinkDef.h)
+#ROOT_GENERATE_DICTIONARY(G__HTTEvent HTTEvent.h LINKDEF LinkDef.h)
 
 add_library(Pythia8 SHARED IMPORTED)
 set_property(TARGET Pythia8 PROPERTY IMPORTED_LOCATION $ENV{PYTHIA8_DIR}/lib/libpythia8.so)
 
-add_library(Pythia8Interface SHARED Pythia8Interface EventProxyHTT.cc HTTEvent.cxx G__HTTEvent.cxx)
+add_library(Pythia8Interface SHARED Pythia8Interface Pythia8Interface.cc)
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
